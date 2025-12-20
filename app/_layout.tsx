@@ -1,10 +1,10 @@
-import { Slot } from "expo-router";
-import { ToastProvider } from "../src/design-system/feedback/ToastProvider";
+import { Stack } from "expo-router";
+import { SubscriptionsProvider } from "../src/features/subscriptions/context/SubscriptionsContext";
 
-export default function RootLayout() {
+export default function Layout() {
   return (
-    <ToastProvider>
-      <Slot />
-    </ToastProvider>
+    <SubscriptionsProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </SubscriptionsProvider>
   );
 }
