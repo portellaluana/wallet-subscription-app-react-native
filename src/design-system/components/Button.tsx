@@ -7,6 +7,7 @@ type Props = {
   onPress: () => void;
   loading?: boolean;
   variant?: "primary" | "secondary";
+  disabled?: boolean;
 };
 
 export function Button({
@@ -14,14 +15,16 @@ export function Button({
   onPress,
   loading = false,
   variant = "primary",
+  disabled = false,
 }: Props) {
   return (
     <Pressable
       onPress={onPress}
-      disabled={loading}
+      disabled={disabled || loading}
       style={[
         styles.base,
         variant === "primary" ? styles.primary : styles.secondary,
+        disabled && styles.disabled,
       ]}
     >
       {loading ? <ActivityIndicator color="#fff" /> : <Text>{label}</Text>}
@@ -41,5 +44,8 @@ const styles = StyleSheet.create({
   secondary: {
     backgroundColor: colors.surface,
     borderWidth: 1,
+  },
+  disabled: {
+    opacity: 0.5,
   },
 });

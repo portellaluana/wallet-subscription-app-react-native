@@ -1,18 +1,15 @@
-import { View } from "react-native";
 import { Card, Text } from "../../../design-system/components";
+import { Subscription } from "../types";
 
 type Props = {
-  name: string;
-  price: number;
+  data: Subscription;
 };
 
-export function SubscriptionItem({ name, price }: Props) {
+export function SubscriptionItem({ data }: Props) {
   return (
     <Card>
-      <View style={{ gap: 4 }}>
-        <Text variant="subtitle">{name}</Text>
-        <Text variant="caption">R$ {price.toFixed(2)} / mês</Text>
-      </View>
+      <Text variant="subtitle">{data.name}</Text>
+      <Text variant="caption">R$ {data.price.toFixed(2)} / mês</Text>
     </Card>
   );
 }

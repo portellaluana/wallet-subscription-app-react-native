@@ -1,20 +1,28 @@
-import { useState } from "react";
-import { Subscription } from "../types";
+import { useMemo, useState } from "react";
+
+export type Subscription = {
+  id: string;
+  name: string;
+  price: number;
+};
 
 export function useSubscriptions() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const total = subscriptions.reduce((acc, item) => acc + item.price, 0);
-
   function addSubscription(data: Omit<Subscription, "id">) {
-    const newItem: Subscription = {
-      id: String(Date.now()),
-      ...data,
-    };
-
-    setSubscriptions((prev) => [...prev, newItem]);
+    setSubscriptions((prev) => [
+      ...prev,
+      {
+        id: String(Date.now()),
+        ...data,
+      },
+    ]);
   }
+
+  const total = useMemo(() => {
+    return subscriptions.reduce((acc, item) => acc + item.price, 0);
+  }, [subscriptions]);
 
   return {
     subscriptions,
