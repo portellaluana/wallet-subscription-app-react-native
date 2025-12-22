@@ -1,7 +1,7 @@
 import { router } from "expo-router";
+import { FlatList, View } from "react-native";
 import {
-  EmptyState,
-  Screen,
+  Button,
   SkeletonList,
   SubscriptionItem,
   SubscriptionsSummary,
@@ -12,39 +12,28 @@ import { useSubscriptionsContext } from "../src/features/subscriptions/context/S
 export default function SubscriptionsScreen() {
   const { subscriptions, loading, total } = useSubscriptionsContext();
 
-  if (loading) {
-    return (
-      <Screen>
-        <Text variant="title">Assinaturas</Text>
-        <SkeletonList />
-      </Screen>
-    );
-  }
-
-  if (subscriptions.length === 0) {
-    return (
-      <Screen>
-        <Text variant="title">Assinaturas</Text>
-
-        <EmptyState
-          title="Nenhuma assinatura cadastrada"
-          description="Adicione suas assinaturas para acompanhar seus gastos mensais."
-          actionLabel="Adicionar assinatura"
-          onAction={() => router.push("/subscriptions/new")}
-        />
-      </Screen>
-    );
-  }
-
   return (
-    <Screen scroll>
-      <Text variant="title">Assinaturas</Text>
-
+    <View style={{ flex: 1, padding: 16, gap: 16 }}>
       <SubscriptionsSummary total={total} />
 
-      {subscriptions.map((item) => (
-        <SubscriptionItem key={item.id} data={item} />
-      ))}
-    </Screen>
+      {loading && <SkeletonList />}
+
+      {!loading && subscriptions.length === 0 && (
+        <Text variant="caption">Nenhuma assinatura cadastrada ainda.</Text>
+      )}
+
+      {!loading && subscriptions.length > 0 && (
+        <FlatList
+          data={subscriptions}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <SubscriptionItem data={item} />}
+        />
+      )}
+
+      <Button
+        label="Adicionar assinatura"
+        onPress={() => router.push("/subscriptions/new")}
+      />
+    </View>
   );
 }

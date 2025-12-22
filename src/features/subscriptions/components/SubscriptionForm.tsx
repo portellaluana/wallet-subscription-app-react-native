@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Text } from "../../../design-system/components";
@@ -7,17 +7,35 @@ import { useSubscriptionsContext } from "../context/SubscriptionsContext";
 import { SubscriptionFormFields } from "./SubscriptionFormFields";
 
 export function SubscriptionForm() {
-  const { addSubscription } = useSubscriptionsContext();
+  const { id } = useLocalSearchParams<{ id?: string }>();
 
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
+  const { subscriptions, addSubscription, updateSubscription } =
+    useSubscriptionsContext();
+
+  const editingSubscription = subscriptions.find((item) => item.id === id);
+
+  const [name, setName] = useState(editingSubscription?.name ?? "");
+  const [price, setPrice] = useState(
+    editingSubscription?.price?.toString() ?? ""
+  );
+
+  const isEdit = !!editingSubscription;
   const isValid = name.trim().length > 0 && Number(price) > 0;
 
   function handleSubmit() {
-    addSubscription({
-      name,
-      price: Number(price),
-    });
+    if (!isValid) return;
+
+    if (isEdit && editingSubscription) {
+      updateSubscription(editingSubscription.id, {
+        name,
+        price: Number(price),
+      });
+    } else {
+      addSubscription({
+        name,
+        price: Number(price),
+      });
+    }
 
     router.back();
   }
@@ -25,7 +43,9 @@ export function SubscriptionForm() {
   return (
     <View style={styles.container}>
       <Card>
-        <Text variant="subtitle">Dados da assinatura</Text>
+        <Text variant="subtitle">
+          {isEdit ? "Editar assinatura" : "Nova assinatura"}
+        </Text>
 
         <SubscriptionFormFields
           name={name}
@@ -43,9 +63,8 @@ export function SubscriptionForm() {
 
       <View style={styles.actions}>
         <Button
-          label="Salvar assinatura"
+          label={isEdit ? "Salvar alterações" : "Criar assinatura"}
           onPress={handleSubmit}
-          disabled={!isValid}
         />
       </View>
     </View>
@@ -58,5 +77,9 @@ const styles = StyleSheet.create({
   },
   actions: {
     marginTop: spacing.lg,
+  },
+  error: {
+    marginTop: spacing.sm,
+    color: "#F59E0B",
   },
 });
