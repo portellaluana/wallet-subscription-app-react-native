@@ -1,39 +1,39 @@
 import { router } from "expo-router";
-import { FlatList, View } from "react-native";
+import { View } from "react-native";
 import {
   Button,
-  SkeletonList,
+  Screen,
   SubscriptionItem,
   SubscriptionsSummary,
   Text,
 } from "../src/design-system/components";
+import { SubscriptionsEmpty } from "../src/features/subscriptions/components/SubscriptionsEmptyState";
 import { useSubscriptionsContext } from "../src/features/subscriptions/context/SubscriptionsContext";
 
 export default function SubscriptionsScreen() {
-  const { subscriptions, loading, total } = useSubscriptionsContext();
+  const { subscriptions, total } = useSubscriptionsContext();
 
   return (
-    <View style={{ flex: 1, padding: 16, gap: 16 }}>
-      <SubscriptionsSummary total={total} />
+    <Screen scroll>
+      <View style={{ gap: 12 }}>
+        <Text variant="title">Assinaturas</Text>
+        {subscriptions.length > 0 && <SubscriptionsSummary total={total} />}
 
-      {loading && <SkeletonList />}
+        {subscriptions.length === 0 ? (
+          <SubscriptionsEmpty />
+        ) : (
+          <View style={{ gap: 12 }}>
+            {subscriptions.map((item) => (
+              <SubscriptionItem key={item.id} data={item} />
+            ))}
+          </View>
+        )}
 
-      {!loading && subscriptions.length === 0 && (
-        <Text variant="caption">Nenhuma assinatura cadastrada ainda.</Text>
-      )}
-
-      {!loading && subscriptions.length > 0 && (
-        <FlatList
-          data={subscriptions}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <SubscriptionItem data={item} />}
+        <Button
+          label="Adicionar assinatura"
+          onPress={() => router.push("/subscriptions/new")}
         />
-      )}
-
-      <Button
-        label="Adicionar assinatura"
-        onPress={() => router.push("/subscriptions/new")}
-      />
-    </View>
+      </View>
+    </Screen>
   );
 }

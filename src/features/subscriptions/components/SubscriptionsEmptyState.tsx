@@ -1,42 +1,28 @@
 import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { Button, Text } from "../../../design-system/components";
-import { colors, spacing } from "../../../design-system/theme";
+import { spacing } from "../../../design-system/theme";
 
-export function SubscriptionsEmptyState() {
+export function SubscriptionsEmpty() {
   return (
     <View style={styles.container}>
-      <Text variant="subtitle">
-        Você ainda não possui assinaturas cadastradas
+      <Text variant="subtitle">Nenhuma assinatura ainda</Text>
+      <Text variant="caption">
+        Adicione suas assinaturas para acompanhar seus gastos mensais
       </Text>
 
-      <Text variant="caption" style={styles.caption}>
-        Comece adicionando sua primeira assinatura para acompanhar seus gastos
-        mensais.
-      </Text>
-
-      <View style={styles.button}>
-        <Button
-          label="Adicionar assinatura"
-          onPress={() => router.push("/subscriptions/new")}
-        />
-      </View>
+      <Button
+        label="Adicionar assinatura"
+        onPress={() => router.push("/subscriptions/new")}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: spacing.lg,
+    marginTop: spacing.xl,
     alignItems: "center",
-  },
-  caption: {
-    textAlign: "center",
-    marginTop: spacing.sm,
-    color: colors.textSecondary,
-  },
-  button: {
-    marginTop: spacing.lg,
-    width: "100%",
+    gap: spacing.md,
   },
 });

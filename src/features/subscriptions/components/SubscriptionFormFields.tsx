@@ -1,6 +1,5 @@
-import { StyleSheet, View } from "react-native";
-import { TextInput } from "../../../design-system/components/TextInput";
-import { spacing } from "../../../design-system/theme";
+import { StyleSheet, TextInput, View } from "react-native";
+import { colors, spacing } from "../../../design-system/theme";
 
 type Props = {
   name: string;
@@ -18,18 +17,21 @@ export function SubscriptionFormFields({
   return (
     <View style={styles.container}>
       <TextInput
-        label="Nome do serviço"
-        placeholder="Ex: Netflix"
+        placeholder="Nome da assinatura"
+        placeholderTextColor={colors.textSecondary}
         value={name}
         onChangeText={onChangeName}
+        autoFocus
+        style={styles.input}
       />
 
       <TextInput
-        label="Valor mensal"
-        placeholder="R$ 0,00"
-        keyboardType="numeric"
+        placeholder="Valor mensal"
+        placeholderTextColor={colors.textSecondary}
         value={price}
         onChangeText={onChangePrice}
+        keyboardType="numeric"
+        style={styles.input}
       />
     </View>
   );
@@ -37,7 +39,13 @@ export function SubscriptionFormFields({
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: spacing.md,
     gap: spacing.md,
+    marginTop: spacing.md,
+  },
+  input: {
+    backgroundColor: colors.surface,
+    padding: spacing.md,
+    borderRadius: 12,
+    color: colors.textPrimary,
   },
 });

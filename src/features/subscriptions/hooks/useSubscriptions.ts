@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import * as Crypto from "expo-crypto";
+import { useEffect, useMemo, useState } from "react";
 import { Subscription } from "../types";
 
 const STORAGE_KEY = "@wallet:subscriptions";
@@ -18,6 +19,8 @@ export function useSubscriptions() {
       if (stored) {
         setSubscriptions(JSON.parse(stored));
       }
+    } catch (e) {
+      console.warn("Erro ao carregar assinaturas", e);
     } finally {
       setLoading(false);
     }
@@ -28,37 +31,43 @@ export function useSubscriptions() {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
 
-  async function addSubscription(data: Omit<Subscription, "id">) {
-    const newSubscription: Subscription = {
-      id: crypto.randomUUID(),
+  function addSubscription(data: Omit<Subscription, "id">) {
+    const newItem: Subscription = {
+      id: Crypto.randomUUID(),
       ...data,
     };
 
-    const updated = [...subscriptions, newSubscription];
-    await persist(updated);
-  }
-
-  async function removeSubscription(id: string) {
-    const updated = subscriptions.filter((item) => item.id !== id);
-    await persist(updated);
+    persist([...subscriptions, newItem]);
   }
 
   function updateSubscription(id: string, data: Omit<Subscription, "id">) {
-    const updated = subscriptions.map((item) =>
-      item.id === id ? { ...item, ...data } : item
+    persist(
+      subscriptions.map((item) =>
+        item.id === id ? { ...item, ...data } : item
+      )
     );
-
-    persist(updated);
   }
 
-  const total = subscriptions.reduce((acc, item) => acc + item.price, 0);
+  function removeSubscription(id: string) {
+    persist(subscriptions.filter((item) => item.id !== id));
+  }
+
+  function getSubscriptionById(id: string) {
+    return subscriptions.find((item) => item.id === id);
+  }
+
+  const total = useMemo(
+    () => subscriptions.reduce((acc, item) => acc + item.price, 0),
+    [subscriptions]
+  );
 
   return {
     subscriptions,
     loading,
     total,
     addSubscription,
-    removeSubscription,
     updateSubscription,
+    removeSubscription,
+    getSubscriptionById,
   };
 }

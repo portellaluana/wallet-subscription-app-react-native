@@ -1,11 +1,9 @@
-import { Screen, Text } from "../../src/design-system/components";
+import { Screen } from "../../src/design-system/components";
 import { SubscriptionForm } from "../../src/features/subscriptions/components/SubscriptionForm";
 
-export default function NewSubscriptionScreen() {
+export default function SubscriptionFormScreen() {
   return (
-    <Screen scroll>
-      <Text variant="title">Nova assinatura</Text>
-
+    <Screen>
       <SubscriptionForm />
     </Screen>
   );

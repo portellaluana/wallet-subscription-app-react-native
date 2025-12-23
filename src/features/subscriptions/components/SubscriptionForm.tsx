@@ -1,32 +1,34 @@
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Text } from "../../../design-system/components";
 import { spacing } from "../../../design-system/theme";
+import { colors } from "../../../design-system/theme/colors";
 import { useSubscriptionsContext } from "../context/SubscriptionsContext";
+import { Subscription } from "../types";
 import { SubscriptionFormFields } from "./SubscriptionFormFields";
 
-export function SubscriptionForm() {
-  const { id } = useLocalSearchParams<{ id?: string }>();
+type Props = {
+  subscription?: Subscription;
+};
 
-  const { subscriptions, addSubscription, updateSubscription } =
-    useSubscriptionsContext();
+export function SubscriptionForm({ subscription }: Props) {
+  const { addSubscription, updateSubscription } = useSubscriptionsContext();
 
-  const editingSubscription = subscriptions.find((item) => item.id === id);
+  const isEdit = !!subscription;
 
-  const [name, setName] = useState(editingSubscription?.name ?? "");
+  const [name, setName] = useState(subscription?.name ?? "");
   const [price, setPrice] = useState(
-    editingSubscription?.price?.toString() ?? ""
+    subscription ? String(subscription.price) : ""
   );
 
-  const isEdit = !!editingSubscription;
   const isValid = name.trim().length > 0 && Number(price) > 0;
 
   function handleSubmit() {
     if (!isValid) return;
 
-    if (isEdit && editingSubscription) {
-      updateSubscription(editingSubscription.id, {
+    if (isEdit && subscription) {
+      updateSubscription(subscription.id, {
         name,
         price: Number(price),
       });
@@ -56,7 +58,7 @@ export function SubscriptionForm() {
       </Card>
 
       {!isValid && (
-        <Text variant="caption" style={{ color: "#F59E0B" }}>
+        <Text variant="caption" style={{ color: colors.warning }}>
           Preencha nome e valor corretamente
         </Text>
       )}
@@ -65,6 +67,7 @@ export function SubscriptionForm() {
         <Button
           label={isEdit ? "Salvar alterações" : "Criar assinatura"}
           onPress={handleSubmit}
+          disabled={!isValid}
         />
       </View>
     </View>
