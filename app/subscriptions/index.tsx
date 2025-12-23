@@ -6,9 +6,9 @@ import {
   SubscriptionItem,
   SubscriptionsSummary,
   Text,
-} from "../src/design-system/components";
-import { SubscriptionsEmpty } from "../src/features/subscriptions/components/SubscriptionsEmptyState";
-import { useSubscriptionsContext } from "../src/features/subscriptions/context/SubscriptionsContext";
+} from "../../src/design-system/components";
+import { SubscriptionsEmpty } from "../../src/features/subscriptions/components/SubscriptionsEmptyState";
+import { useSubscriptionsContext } from "../../src/features/subscriptions/context/SubscriptionsContext";
 
 export default function SubscriptionsScreen() {
   const { subscriptions, total } = useSubscriptionsContext();
