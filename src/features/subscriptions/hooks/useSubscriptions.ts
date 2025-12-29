@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Crypto from "expo-crypto";
 import { useEffect, useMemo, useState } from "react";
 import { Subscription } from "../types";
 
@@ -31,16 +30,18 @@ export function useSubscriptions() {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
 
-  function addSubscription(data: Omit<Subscription, "id">) {
+  function addSubscription(data: Omit<Subscription, "id" | "status">) {
     const newItem: Subscription = {
-      id: Crypto.randomUUID(),
-      ...data,
+      id: crypto.randomUUID(),
+      name: data.name,
+      price: data.price,
+      status: "active",
     };
 
     persist([...subscriptions, newItem]);
   }
 
-  function updateSubscription(id: string, data: Omit<Subscription, "id">) {
+  function updateSubscription(id: string, data: Partial<Subscription>) {
     persist(
       subscriptions.map((item) =>
         item.id === id ? { ...item, ...data } : item
@@ -48,8 +49,8 @@ export function useSubscriptions() {
     );
   }
 
-  function removeSubscription(id: string) {
-    persist(subscriptions.filter((item) => item.id !== id));
+  function cancelSubscription(id: string) {
+    updateSubscription(id, { status: "canceled" });
   }
 
   function getSubscriptionById(id: string) {
@@ -67,7 +68,7 @@ export function useSubscriptions() {
     total,
     addSubscription,
     updateSubscription,
-    removeSubscription,
+    cancelSubscription,
     getSubscriptionById,
   };
 }

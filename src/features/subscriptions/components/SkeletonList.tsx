@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { Card, Skeleton } from "../../../design-system/components";
 
-export function SkeletonList() {
+export default function SkeletonList() {
   return (
     <View style={{ gap: 12, marginTop: 16 }}>
       {[1, 2, 3].map((item) => (

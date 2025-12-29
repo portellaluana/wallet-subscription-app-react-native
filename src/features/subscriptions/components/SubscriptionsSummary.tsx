@@ -6,7 +6,7 @@ type Props = {
   total: number;
 };
 
-export function SubscriptionsSummary({ total }: Props) {
+export default function SubscriptionsSummary({ total }: Props) {
   return (
     <Card style={styles.card}>
       <Text variant="caption">Total mensal</Text>
